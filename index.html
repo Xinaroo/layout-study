@@ -279,7 +279,18 @@
     event.target.classList.add("selected");
 
     // 응답 저장
-    responses[imageOrder[currentIndex]] = category;
+    const imgPath = imageOrder[currentIndex];
+    const num = imgPath.match(/(\d+)/)[1];  // 숫자 추출
+    responses[num] = category;
+
+    setTimeout(() => {
+        currentIndex++;
+        if (currentIndex < imageOrder.length) {
+            showImage();
+        } else {
+            submitResponses();
+        }
+    }, 250);
 
     // 잠깐 후 다음으로
     setTimeout(() => {
@@ -299,7 +310,7 @@
 
   const payload = {
     participantId,
-    imageOrder,
+    imageOrder: imageOrder.map(img => img.match(/(\d+)/)[1]),
     responses,
   };
 
