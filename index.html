@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout Study</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── 시작 화면 ── */
+    #startScreen {
+      background: white;
+      border-radius: 12px;
+      padding: 48px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    }
+
+    #startScreen h1 {
+      font-size: 22px;
+      margin-bottom: 12px;
+      color: #111;
+    }
+
+    #startScreen p {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    #participantId {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #participantId:focus { border-color: #4A90E2; }
+
+    /* ── 공통 버튼 ── */
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      font-size: 16px;
+      font-weight: 600;
+      background: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover { background: #357ABD; }
+
+    /* ── 진행 화면 ── */
+    #studyScreen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 680px;
+      padding: 24px 16px;
+    }
+
+    #progressBar {
+      width: 100%;
+      max-width: 480px;
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    #progressFill {
+      height: 100%;
+      background: #4A90E2;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+
+    #progressText {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    #imageContainer {
+      width: 100%;
+      max-width: 560px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      margin-bottom: 28px;
+    }
+
+    #layoutImage {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #choiceRow {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .choice-btn {
+      flex: 1;
+      padding: 16px 8px;
+      font-size: 15px;
+      font-weight: 600;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: #333;
+    }
+
+    .choice-btn:hover {
+      border-color: #4A90E2;
+      color: #4A90E2;
+      background: #f0f6ff;
+    }
+
+    .choice-btn.selected {
+      border-color: #4A90E2;
+      background: #4A90E2;
+      color: white;
+    }
+
+    /* ── 완료 화면 ── */
+    #doneScreen {
+      display: none;
+      background: white;
+      border-radius: 12px;
+      padding: 48px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    }
+
+    #doneScreen h2 { font-size: 22px; margin-bottom: 12px; }
+    #doneScreen p  { font-size: 14px; color: #555; line-height: 1.7; }
+
+    .spinner {
+      display: none;
+      width: 28px; height: 28px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #4A90E2;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 20px auto 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- ── 시작 화면 ── -->
+<div id="startScreen">
+  <h1>Layout Classification Study</h1>
+  <p>
+    화면에 나타나는 레이아웃을 보고<br>
+    세 가지 중 하나로 분류해주세요.<br><br>
+    총 60개의 이미지가 순서대로 제시됩니다.
+  </p>
+  <input id="participantId" type="text" placeholder="참가자 ID를 입력하세요" />
+  <button class="btn-primary" onclick="startStudy()">시작하기</button>
+</div>
+
+<!-- ── 진행 화면 ── -->
+<div id="studyScreen">
+  <div id="progressBar"><div id="progressFill"></div></div>
+  <div id="progressText"></div>
+
+  <div id="imageContainer">
+    <img id="layoutImage" src="" alt="layout" />
+  </div>
+
+  <div id="choiceRow">
+    <button class="choice-btn" onclick="selectChoice('Independent')">Independent</button>
+    <button class="choice-btn" onclick="selectChoice('Proximal')">Proximal</button>
+    <button class="choice-btn" onclick="selectChoice('Relational')">Relational</button>
+  </div>
+</div>
+
+<!-- ── 완료 화면 ── -->
+<div id="doneScreen">
+  <h2>완료되었습니다 🎉</h2>
+  <p>참여해주셔서 감사합니다.<br>응답이 저장되었습니다.</p>
+  <div class="spinner" id="spinner"></div>
+</div>
+
+<script>
+  // ============================================================
+  // ★ 여기만 수정하세요
+  // ============================================================
+
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFFOLJRG-Tkq70PUfuiPtHzWrMiaanPAwUQOhvuce90rD5flzLP80zAd4R8auQn8H/exec";  // Apps Script 배포 URL
+
+  const IMAGES = Array.from({ length: 60 }, (_, i) =>
+    `images/layout_${String(i + 1).padStart(2, "0")}.jpg`
+  );
+
+  // ============================================================
+
+  let participantId = "";
+  let imageOrder    = [];
+  let responses     = {};
+  let currentIndex  = 0;
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function startStudy() {
+    const input = document.getElementById("participantId").value.trim();
+    if (!input) {
+      alert("참가자 ID를 입력해주세요.");
+      return;
+    }
+
+    participantId = input;
+    imageOrder    = shuffle(IMAGES);
+    currentIndex  = 0;
+    responses     = {};
+
+    document.getElementById("startScreen").style.display  = "none";
+    document.getElementById("studyScreen").style.display  = "flex";
+
+    showImage();
+  }
+
+  function showImage() {
+    const total = imageOrder.length;
+    const prog  = (currentIndex / total) * 100;
+
+    document.getElementById("progressFill").style.width = prog + "%";
+    document.getElementById("progressText").textContent =
+      `${currentIndex + 1} / ${total}`;
+
+    document.getElementById("layoutImage").src = imageOrder[currentIndex];
+
+    // 버튼 선택 초기화
+    document.querySelectorAll(".choice-btn").forEach(b => b.classList.remove("selected"));
+  }
+
+  function selectChoice(category) {
+    // 버튼 하이라이트
+    document.querySelectorAll(".choice-btn").forEach(b => b.classList.remove("selected"));
+    event.target.classList.add("selected");
+
+    // 응답 저장
+    responses[imageOrder[currentIndex]] = category;
+
+    // 잠깐 후 다음으로
+    setTimeout(() => {
+      currentIndex++;
+      if (currentIndex < imageOrder.length) {
+        showImage();
+      } else {
+        submitResponses();
+      }
+    }, 250);
+  }
+
+  async function submitResponses() {
+  document.getElementById("studyScreen").style.display = "none";
+  document.getElementById("doneScreen").style.display  = "flex";
+  document.getElementById("spinner").style.display     = "block";
+
+  const payload = {
+    participantId,
+    imageOrder,
+    responses,
+  };
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload),
+    });
+    console.log("전송 완료");
+  } catch (err) {
+    console.error("전송 실패:", err);
+  }
+
+  document.getElementById("spinner").style.display = "none";
+}
+</script>
+
+</body>
+</html>
