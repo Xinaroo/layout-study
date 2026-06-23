@@ -16,30 +16,47 @@
       justify-content: center;
     }
 
-    /* ── 시작 화면 ── */
-    #startScreen {
+    /* ── 공통 카드 ── */
+    .card {
       background: white;
       border-radius: 12px;
       padding: 48px;
-      max-width: 480px;
+      max-width: 520px;
       width: 90%;
       text-align: center;
       box-shadow: 0 2px 16px rgba(0,0,0,0.08);
     }
 
-    #startScreen h1 {
-      font-size: 22px;
-      margin-bottom: 12px;
-      color: #111;
-    }
+    .card h1 { font-size: 22px; margin-bottom: 12px; color: #111; }
+    .card h2 { font-size: 20px; margin-bottom: 16px; color: #111; }
+    .card p  { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 24px; }
 
-    #startScreen p {
+    .badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .badge-ind  { background: #EEF2FF; color: #4338CA; }
+    .badge-prox { background: #FFF7ED; color: #C2410C; }
+    .badge-rel  { background: #F0FDF4; color: #15803D; }
+
+    .desc-box {
+      background: #f8f8f8;
+      border-radius: 8px;
+      padding: 16px 20px;
       font-size: 14px;
-      color: #555;
-      line-height: 1.7;
+      color: #333;
+      line-height: 1.8;
+      text-align: left;
       margin-bottom: 28px;
     }
 
+    .desc-box strong { color: #111; }
+
+    /* ── 입력 ── */
     #participantId {
       width: 100%;
       padding: 12px 16px;
@@ -50,7 +67,6 @@
       outline: none;
       transition: border-color 0.2s;
     }
-
     #participantId:focus { border-color: #4A90E2; }
 
     /* ── 공통 버튼 ── */
@@ -66,8 +82,21 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-
     .btn-primary:hover { background: #357ABD; }
+
+    /* ── 스텝 인디케이터 ── */
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ddd;
+    }
+    .step-dot.active { background: #4A90E2; }
 
     /* ── 진행 화면 ── */
     #studyScreen {
@@ -88,14 +117,12 @@
       margin-bottom: 10px;
       overflow: hidden;
     }
-
     #progressFill {
       height: 100%;
       background: #4A90E2;
       border-radius: 3px;
       transition: width 0.3s;
     }
-
     #progressText {
       font-size: 13px;
       color: #888;
@@ -111,12 +138,7 @@
       box-shadow: 0 2px 16px rgba(0,0,0,0.08);
       margin-bottom: 28px;
     }
-
-    #layoutImage {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
+    #layoutImage { width: 100%; height: auto; display: block; }
 
     #choiceRow {
       display: flex;
@@ -124,7 +146,6 @@
       width: 100%;
       max-width: 560px;
     }
-
     .choice-btn {
       flex: 1;
       padding: 16px 8px;
@@ -137,18 +158,8 @@
       transition: all 0.15s;
       color: #333;
     }
-
-    .choice-btn:hover {
-      border-color: #4A90E2;
-      color: #4A90E2;
-      background: #f0f6ff;
-    }
-
-    .choice-btn.selected {
-      border-color: #4A90E2;
-      background: #4A90E2;
-      color: white;
-    }
+    .choice-btn:hover  { border-color: #4A90E2; color: #4A90E2; background: #f0f6ff; }
+    .choice-btn.selected { border-color: #4A90E2; background: #4A90E2; color: white; }
 
     /* ── 완료 화면 ── */
     #doneScreen {
@@ -161,7 +172,6 @@
       text-align: center;
       box-shadow: 0 2px 16px rgba(0,0,0,0.08);
     }
-
     #doneScreen h2 { font-size: 22px; margin-bottom: 12px; }
     #doneScreen p  { font-size: 14px; color: #555; line-height: 1.7; }
 
@@ -179,27 +189,36 @@
 </head>
 <body>
 
-<!-- ── 시작 화면 ── -->
-<div id="startScreen">
+<!-- ── 1. 시작 화면 ── -->
+<div id="startScreen" class="card">
   <h1>Layout Classification Study</h1>
   <p>
-    화면에 나타나는 레이아웃을 보고<br>
-    세 가지 중 하나로 분류해주세요.<br><br>
-    총 60개의 이미지가 순서대로 제시됩니다.
+    화면에 나타나는 레이아웃 이미지를 보고<br>
+    세 가지 유형 중 하나로 분류하는 실험입니다.<br><br>
+    시작 전에 각 유형에 대한 설명을 읽어주세요.
   </p>
   <input id="participantId" type="text" placeholder="참가자 ID를 입력하세요" />
-  <button class="btn-primary" onclick="startStudy()">시작하기</button>
+  <button class="btn-primary" onclick="goToInstruction(0)">다음 →</button>
 </div>
 
-<!-- ── 진행 화면 ── -->
+<!-- ── 2. 설명 화면 (3페이지) ── -->
+<div id="instructionScreen" class="card" style="display:none;">
+  <div class="step-indicator">
+    <div class="step-dot" id="dot0"></div>
+    <div class="step-dot" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+  </div>
+  <div id="instructionContent"></div>
+  <button class="btn-primary" id="instructionNextBtn" onclick="nextInstruction()">다음 →</button>
+</div>
+
+<!-- ── 3. 진행 화면 ── -->
 <div id="studyScreen">
   <div id="progressBar"><div id="progressFill"></div></div>
   <div id="progressText"></div>
-
   <div id="imageContainer">
     <img id="layoutImage" src="" alt="layout" />
   </div>
-
   <div id="choiceRow">
     <button class="choice-btn" onclick="selectChoice('Independent')">Independent</button>
     <button class="choice-btn" onclick="selectChoice('Proximal')">Proximal</button>
@@ -207,7 +226,7 @@
   </div>
 </div>
 
-<!-- ── 완료 화면 ── -->
+<!-- ── 4. 완료 화면 ── -->
 <div id="doneScreen">
   <h2>완료되었습니다 🎉</h2>
   <p>참여해주셔서 감사합니다.<br>응답이 저장되었습니다.</p>
@@ -218,19 +237,116 @@
   // ============================================================
   // ★ 여기만 수정하세요
   // ============================================================
-
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFFOLJRG-Tkq70PUfuiPtHzWrMiaanPAwUQOhvuce90rD5flzLP80zAd4R8auQn8H/exec";  // Apps Script 배포 URL
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFFOLJRG-Tkq70PUfuiPtHzWrMiaanPAwUQOhvuce90rD5flzLP80zAd4R8auQn8H/exec";
 
   const IMAGES = Array.from({ length: 60 }, (_, i) =>
     `images/layout_${String(i + 1).padStart(2, "0")}.jpg`
   );
-
   // ============================================================
 
+  // 설명 3페이지 내용
+  const INSTRUCTIONS = [
+    {
+      badge: "Independent",
+      badgeClass: "badge-ind",
+      title: "Independent",
+      content: `
+        <strong>초록색 outline으로 표시된 물체가 가상 물체입니다.</strong><br><br>
+        Independent 배치에서는 가상 물체가 주변 실제 물체들과
+        특별한 공간적 관계를 맺지 않습니다.<br><br>
+        어느 물체 옆에 붙어있지도 않고, 물체들 사이에 끼어있지도 않으며,
+        전체 배치의 중심에 있지도 않습니다.<br><br>
+        가상 물체가 전체 배치 구조를 해석하는 데 특별한 기준점을 제공하지 않는 배치입니다.
+      `
+    },
+    {
+      badge: "Proximal",
+      badgeClass: "badge-prox",
+      title: "Proximal",
+      content: `
+        <strong>초록색 outline으로 표시된 물체가 가상 물체입니다.</strong><br><br>
+        Proximal 배치에서는 가상 물체가 하나의 실제 물체와
+        가까이 붙어있습니다.<br><br>
+        특정 물체 한 개와 짝을 이루는 느낌이 나며,
+        나머지 물체들과는 거리가 있습니다.<br><br>
+        핵심은 <strong>"사이"가 아닌 "가까움"</strong>입니다.
+        두 물체 사이에 끼어있는 것이 아니라,
+        한 물체 옆에 붙어있는 배치입니다.
+      `
+    },
+    {
+      badge: "Relational",
+      badgeClass: "badge-rel",
+      title: "Relational",
+      content: `
+        <strong>초록색 outline으로 표시된 물체가 가상 물체입니다.</strong><br><br>
+        Relational 배치에서는 가상 물체가 여러 실제 물체들과 함께
+        하나의 전체적인 형태나 패턴을 이룹니다.<br><br>
+        L자형 배치, 원형 배치 등 전체 구조 안에서
+        가상 물체가 관계적 위치를 차지합니다.<br><br>
+        가상 물체가 <strong>전체 배치의 일부</strong>로서
+        구조적 역할을 하는 배치입니다.
+      `
+    }
+  ];
+
+  let currentInstruction = 0;
   let participantId = "";
   let imageOrder    = [];
   let responses     = {};
   let currentIndex  = 0;
+
+  function goToInstruction(idx) {
+    const input = document.getElementById("participantId").value.trim();
+    if (!input) {
+      alert("참가자 ID를 입력해주세요.");
+      return;
+    }
+    participantId = input;
+
+    document.getElementById("startScreen").style.display      = "none";
+    document.getElementById("instructionScreen").style.display = "block";
+    showInstruction(idx);
+  }
+
+  function showInstruction(idx) {
+    currentInstruction = idx;
+    const inst = INSTRUCTIONS[idx];
+
+    // 스텝 dot
+    document.querySelectorAll(".step-dot").forEach((d, i) => {
+      d.classList.toggle("active", i === idx);
+    });
+
+    // 내용
+    document.getElementById("instructionContent").innerHTML = `
+      <span class="badge ${inst.badgeClass}">${inst.badge}</span>
+      <h2>${inst.title}</h2>
+      <div class="desc-box">${inst.content}</div>
+    `;
+
+    // 마지막 페이지면 버튼 텍스트 변경
+    const btn = document.getElementById("instructionNextBtn");
+    btn.textContent = idx === INSTRUCTIONS.length - 1 ? "실험 시작하기 →" : "다음 →";
+  }
+
+  function nextInstruction() {
+    if (currentInstruction < INSTRUCTIONS.length - 1) {
+      showInstruction(currentInstruction + 1);
+    } else {
+      startStudy();
+    }
+  }
+
+  function startStudy() {
+    imageOrder   = shuffle(IMAGES);
+    currentIndex = 0;
+    responses    = {};
+
+    document.getElementById("instructionScreen").style.display = "none";
+    document.getElementById("studyScreen").style.display       = "flex";
+    showImage();
+  }
 
   function shuffle(arr) {
     const a = [...arr];
@@ -241,58 +357,22 @@
     return a;
   }
 
-  function startStudy() {
-    const input = document.getElementById("participantId").value.trim();
-    if (!input) {
-      alert("참가자 ID를 입력해주세요.");
-      return;
-    }
-
-    participantId = input;
-    imageOrder    = shuffle(IMAGES);
-    currentIndex  = 0;
-    responses     = {};
-
-    document.getElementById("startScreen").style.display  = "none";
-    document.getElementById("studyScreen").style.display  = "flex";
-
-    showImage();
-  }
-
   function showImage() {
     const total = imageOrder.length;
-    const prog  = (currentIndex / total) * 100;
-
-    document.getElementById("progressFill").style.width = prog + "%";
-    document.getElementById("progressText").textContent =
-      `${currentIndex + 1} / ${total}`;
-
-    document.getElementById("layoutImage").src = imageOrder[currentIndex];
-
-    // 버튼 선택 초기화
+    document.getElementById("progressFill").style.width  = (currentIndex / total * 100) + "%";
+    document.getElementById("progressText").textContent  = `${currentIndex + 1} / ${total}`;
+    document.getElementById("layoutImage").src           = imageOrder[currentIndex];
     document.querySelectorAll(".choice-btn").forEach(b => b.classList.remove("selected"));
   }
 
   function selectChoice(category) {
-    // 버튼 하이라이트
     document.querySelectorAll(".choice-btn").forEach(b => b.classList.remove("selected"));
     event.target.classList.add("selected");
 
-    // 응답 저장
     const imgPath = imageOrder[currentIndex];
-    const num = imgPath.match(/(\d+)/)[1];  // 숫자 추출
+    const num = imgPath.match(/(\d+)/)[1];
     responses[num] = category;
 
-    setTimeout(() => {
-        currentIndex++;
-        if (currentIndex < imageOrder.length) {
-            showImage();
-        } else {
-            submitResponses();
-        }
-    }, 250);
-
-    // 잠깐 후 다음으로
     setTimeout(() => {
       currentIndex++;
       if (currentIndex < imageOrder.length) {
@@ -304,30 +384,30 @@
   }
 
   async function submitResponses() {
-  document.getElementById("studyScreen").style.display = "none";
-  document.getElementById("doneScreen").style.display  = "flex";
-  document.getElementById("spinner").style.display     = "block";
+    document.getElementById("studyScreen").style.display = "none";
+    document.getElementById("doneScreen").style.display  = "flex";
+    document.getElementById("spinner").style.display     = "block";
 
-  const payload = {
-    participantId,
-    imageOrder: imageOrder.map(img => img.match(/(\d+)/)[1]),
-    responses,
-  };
+    const payload = {
+      participantId,
+      imageOrder: imageOrder.map(img => img.match(/(\d+)/)[1]),
+      responses,
+    };
 
-  try {
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify(payload),
-    });
-    console.log("전송 완료");
-  } catch (err) {
-    console.error("전송 실패:", err);
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload),
+      });
+      console.log("전송 완료");
+    } catch (err) {
+      console.error("전송 실패:", err);
+    }
+
+    document.getElementById("spinner").style.display = "none";
   }
-
-  document.getElementById("spinner").style.display = "none";
-}
 </script>
 
 </body>
