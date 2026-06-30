@@ -42,6 +42,7 @@
     .badge-ind  { background: #EEF2FF; color: #4338CA; }
     .badge-prox { background: #FFF7ED; color: #C2410C; }
     .badge-rel  { background: #F0FDF4; color: #15803D; }
+    .badge-low  { background: #FEF2F2; color: #B91C1C; }
 
     .desc-box {
       background: #f8f8f8;
@@ -83,6 +84,20 @@
       transition: background 0.2s;
     }
     .btn-primary:hover { background: #357ABD; }
+    .btn-primary:disabled { background: #cfd8e3; cursor: not-allowed; }
+
+    .btn-secondary {
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      background: white;
+      color: #4A90E2;
+      border: 1.5px solid #4A90E2;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover { background: #f0f6ff; }
 
     /* ── 스텝 인디케이터 ── */
     .step-indicator {
@@ -104,13 +119,13 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      max-width: 680px;
+      max-width: 1280px;
       padding: 24px 16px;
     }
 
     #progressBar {
       width: 100%;
-      max-width: 480px;
+      max-width: 1100px;
       height: 6px;
       background: #e0e0e0;
       border-radius: 3px;
@@ -129,9 +144,10 @@
       margin-bottom: 24px;
     }
 
+    /* 이미지 영역: 기존 대비 약 2배 폭 */
     #imageContainer {
       width: 100%;
-      max-width: 560px;
+      max-width: 1100px;
       background: white;
       border-radius: 12px;
       overflow: hidden;
@@ -144,12 +160,13 @@
       display: flex;
       gap: 12px;
       width: 100%;
-      max-width: 560px;
+      max-width: 1100px;
+      margin-bottom: 24px;
     }
     .choice-btn {
       flex: 1;
-      padding: 16px 8px;
-      font-size: 15px;
+      padding: 18px 8px;
+      font-size: 16px;
       font-weight: 600;
       border: 2px solid #ddd;
       border-radius: 10px;
@@ -160,6 +177,60 @@
     }
     .choice-btn:hover  { border-color: #4A90E2; color: #4A90E2; background: #f0f6ff; }
     .choice-btn.selected { border-color: #4A90E2; background: #4A90E2; color: white; }
+
+    /* ── confidence 척도 ── */
+    #confidenceBox {
+      width: 100%;
+      max-width: 1100px;
+      background: white;
+      border-radius: 10px;
+      padding: 18px 24px 22px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+      opacity: 0.4;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    #confidenceBox.enabled { opacity: 1; pointer-events: auto; }
+    #confidenceBox .conf-label {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    #confidenceScale {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .conf-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .conf-circle {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #888;
+      transition: all 0.15s;
+    }
+    .conf-item:hover .conf-circle { border-color: #4A90E2; }
+    .conf-item.selected .conf-circle { background: #4A90E2; border-color: #4A90E2; color: white; }
+    .conf-caption { font-size: 11px; color: #999; }
+
+    #nextBtnWrap {
+      width: 100%;
+      max-width: 1100px;
+    }
 
     /* ── 완료 화면 ── */
     #doneScreen {
@@ -185,6 +256,114 @@
       margin: 20px auto 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── 리뷰 화면 ── */
+    #reviewScreen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 1280px;
+      padding: 24px 16px;
+    }
+    #reviewHeader {
+      width: 100%;
+      max-width: 1200px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #reviewHeader h1 { font-size: 22px; margin-bottom: 8px; color: #111; }
+    #reviewHeader p { font-size: 13px; color: #777; }
+
+    #reviewTabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .review-tab {
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 20px;
+      border: 1.5px solid #ddd;
+      background: white;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.15s;
+    }
+    .review-tab.active { border-color: #4A90E2; background: #4A90E2; color: white; }
+    .review-tab.low { border-color: #fca5a5; }
+    .review-tab.low.active { background: #DC2626; border-color: #DC2626; }
+
+    #reviewGrid {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .review-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.12s;
+    }
+    .review-card:hover { transform: translateY(-2px); }
+    .review-card img { width: 100%; height: auto; display: block; }
+    .review-card .review-card-info {
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #666;
+      display: flex;
+      justify-content: space-between;
+    }
+    .review-card .conf-pill {
+      padding: 1px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      background: #f1f1f1;
+    }
+    .review-card .conf-pill.lowval { background: #FEF2F2; color: #B91C1C; }
+
+    #reviewEmpty {
+      font-size: 14px;
+      color: #999;
+      padding: 60px 0;
+    }
+
+    #reviewFooter {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* ── 확대 모달 ── */
+    #imgModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 30px;
+    }
+    #imgModal img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 8px;
+    }
+    #imgModalClose {
+      position: absolute;
+      top: 24px; right: 32px;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -224,11 +403,45 @@
     <button class="choice-btn" onclick="selectChoice('Proximal')">Proximal</button>
     <button class="choice-btn" onclick="selectChoice('Relational')">Relational</button>
   </div>
+
+  <div id="confidenceBox">
+    <div class="conf-label">이 분류에 대해 얼마나 확신하시나요? (1 = 전혀 확신 없음, 7 = 매우 확신함)</div>
+    <div id="confidenceScale"></div>
+  </div>
+
+  <div id="nextBtnWrap">
+    <button class="btn-primary" id="goNextBtn" disabled onclick="goNext()">다음 →</button>
+  </div>
 </div>
 
-<!-- ── 4. 완료 화면 ── -->
+<!-- ── 4. 리뷰 화면 ── -->
+<div id="reviewScreen">
+  <div id="reviewHeader">
+    <h1>분류 결과 확인</h1>
+    <p>탭을 눌러 카테고리별로 모아보거나, 확신도가 낮았던(1~3점) 항목만 따로 확인할 수 있습니다.</p>
+  </div>
+  <div id="reviewTabs">
+    <button class="review-tab active" data-tab="Independent" onclick="switchTab('Independent')">Independent</button>
+    <button class="review-tab" data-tab="Proximal" onclick="switchTab('Proximal')">Proximal</button>
+    <button class="review-tab" data-tab="Relational" onclick="switchTab('Relational')">Relational</button>
+    <button class="review-tab low" data-tab="LowConfidence" onclick="switchTab('LowConfidence')">확신도 낮음 (1~3점)</button>
+  </div>
+  <div id="reviewGrid"></div>
+  <div id="reviewFooter">
+    <button class="btn-secondary" onclick="goBackToStudyEnd()">← 분류 화면으로 돌아가기</button>
+    <button class="btn-primary" style="width:auto; padding:10px 24px;" onclick="submitResponses()">최종 제출하기</button>
+  </div>
+</div>
+
+<!-- ── 확대 모달 ── -->
+<div id="imgModal" onclick="closeModal(event)">
+  <span id="imgModalClose">&times;</span>
+  <img id="imgModalImage" src="" alt="enlarged" />
+</div>
+
+<!-- ── 5. 완료 화면 ── -->
 <div id="doneScreen">
-  <h2>완료되었습니다 🎉</h2>
+  <h2>완료되었습니다.</h2>
   <p>참여해주셔서 감사합니다.<br>응답이 저장되었습니다.</p>
   <div class="spinner" id="spinner"></div>
 </div>
@@ -293,8 +506,11 @@
   let currentInstruction = 0;
   let participantId = "";
   let imageOrder    = [];
-  let responses     = {};
+  let responses     = {};   // { num: { category, confidence } }
   let currentIndex  = 0;
+  let currentCategory = null;
+  let currentConfidence = null;
+  let currentReviewTab = "Independent";
 
   function goToInstruction(idx) {
     const input = document.getElementById("participantId").value.trim();
@@ -313,19 +529,16 @@
     currentInstruction = idx;
     const inst = INSTRUCTIONS[idx];
 
-    // 스텝 dot
     document.querySelectorAll(".step-dot").forEach((d, i) => {
       d.classList.toggle("active", i === idx);
     });
 
-    // 내용
     document.getElementById("instructionContent").innerHTML = `
       <span class="badge ${inst.badgeClass}">${inst.badge}</span>
       <h2>${inst.title}</h2>
       <div class="desc-box">${inst.content}</div>
     `;
 
-    // 마지막 페이지면 버튼 텍스트 변경
     const btn = document.getElementById("instructionNextBtn");
     btn.textContent = idx === INSTRUCTIONS.length - 1 ? "실험 시작하기 →" : "다음 →";
   }
@@ -343,6 +556,8 @@
     currentIndex = 0;
     responses    = {};
 
+    buildConfidenceScale();
+
     document.getElementById("instructionScreen").style.display = "none";
     document.getElementById("studyScreen").style.display       = "flex";
     showImage();
@@ -357,41 +572,172 @@
     return a;
   }
 
+  function buildConfidenceScale() {
+    const wrap = document.getElementById("confidenceScale");
+    wrap.innerHTML = "";
+    for (let i = 1; i <= 7; i++) {
+      const item = document.createElement("div");
+      item.className = "conf-item";
+      item.dataset.value = i;
+      item.onclick = () => selectConfidence(i);
+
+      const circle = document.createElement("div");
+      circle.className = "conf-circle";
+      circle.textContent = i;
+
+      const caption = document.createElement("div");
+      caption.className = "conf-caption";
+      caption.textContent = i === 1 ? "확신 없음" : (i === 7 ? "매우 확신" : "");
+
+      item.appendChild(circle);
+      item.appendChild(caption);
+      wrap.appendChild(item);
+    }
+  }
+
   function showImage() {
     const total = imageOrder.length;
     document.getElementById("progressFill").style.width  = (currentIndex / total * 100) + "%";
     document.getElementById("progressText").textContent  = `${currentIndex + 1} / ${total}`;
     document.getElementById("layoutImage").src           = imageOrder[currentIndex];
+
     document.querySelectorAll(".choice-btn").forEach(b => b.classList.remove("selected"));
+    document.querySelectorAll(".conf-item").forEach(c => c.classList.remove("selected"));
+    document.getElementById("confidenceBox").classList.remove("enabled");
+    document.getElementById("goNextBtn").disabled = true;
+
+    currentCategory   = null;
+    currentConfidence = null;
+
+    // 이미 답한 적이 있다면 (review에서 돌아온 경우) 복원
+    const num = imageOrder[currentIndex].match(/(\d+)/)[1];
+    const prev = responses[num];
+    if (prev) {
+      currentCategory = prev.category;
+      currentConfidence = prev.confidence;
+      document.querySelectorAll(".choice-btn").forEach(b => {
+        if (b.textContent === prev.category) b.classList.add("selected");
+      });
+      document.getElementById("confidenceBox").classList.add("enabled");
+      document.querySelectorAll(".conf-item").forEach(c => {
+        if (parseInt(c.dataset.value) === prev.confidence) c.classList.add("selected");
+      });
+      document.getElementById("goNextBtn").disabled = false;
+    }
   }
 
   function selectChoice(category) {
     document.querySelectorAll(".choice-btn").forEach(b => b.classList.remove("selected"));
     event.target.classList.add("selected");
+    currentCategory = category;
+
+    document.getElementById("confidenceBox").classList.add("enabled");
+    updateNextEnabled();
+  }
+
+  function selectConfidence(val) {
+    document.querySelectorAll(".conf-item").forEach(c => c.classList.remove("selected"));
+    document.querySelector(`.conf-item[data-value="${val}"]`).classList.add("selected");
+    currentConfidence = val;
+    updateNextEnabled();
+  }
+
+  function updateNextEnabled() {
+    document.getElementById("goNextBtn").disabled = !(currentCategory && currentConfidence);
+  }
+
+  function goNext() {
+    if (!currentCategory || !currentConfidence) return;
 
     const imgPath = imageOrder[currentIndex];
     const num = imgPath.match(/(\d+)/)[1];
-    responses[num] = category;
+    responses[num] = { category: currentCategory, confidence: currentConfidence };
 
-    setTimeout(() => {
-      currentIndex++;
-      if (currentIndex < imageOrder.length) {
-        showImage();
-      } else {
-        submitResponses();
-      }
-    }, 250);
+    currentIndex++;
+    if (currentIndex < imageOrder.length) {
+      showImage();
+    } else {
+      showReviewScreen();
+    }
   }
 
+  // ── 리뷰 화면 ──
+  function showReviewScreen() {
+    document.getElementById("studyScreen").style.display  = "none";
+    document.getElementById("reviewScreen").style.display = "flex";
+    switchTab(currentReviewTab);
+  }
+
+  function goBackToStudyEnd() {
+    document.getElementById("reviewScreen").style.display = "none";
+    document.getElementById("studyScreen").style.display  = "flex";
+    currentIndex = imageOrder.length - 1;
+    showImage();
+  }
+
+  function switchTab(tab) {
+    currentReviewTab = tab;
+    document.querySelectorAll(".review-tab").forEach(t => {
+      t.classList.toggle("active", t.dataset.tab === tab);
+    });
+
+    const grid = document.getElementById("reviewGrid");
+    grid.innerHTML = "";
+
+    let entries = Object.entries(responses); // [num, {category, confidence}]
+
+    if (tab === "LowConfidence") {
+      entries = entries.filter(([num, r]) => r.confidence <= 3);
+    } else {
+      entries = entries.filter(([num, r]) => r.category === tab);
+    }
+
+    if (entries.length === 0) {
+      grid.innerHTML = `<div id="reviewEmpty">해당하는 항목이 없습니다.</div>`;
+      return;
+    }
+
+    entries.sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+
+    entries.forEach(([num, r]) => {
+      const imgSrc = `images/layout_${num.padStart(2, "0")}.jpg`;
+      const card = document.createElement("div");
+      card.className = "review-card";
+      card.onclick = () => openModal(imgSrc);
+
+      const lowClass = r.confidence <= 3 ? "lowval" : "";
+      card.innerHTML = `
+        <img src="${imgSrc}" alt="layout ${num}">
+        <div class="review-card-info">
+          <span>#${num} · ${r.category}</span>
+          <span class="conf-pill ${lowClass}">conf ${r.confidence}</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function openModal(src) {
+    document.getElementById("imgModalImage").src = src;
+    document.getElementById("imgModal").style.display = "flex";
+  }
+
+  function closeModal(e) {
+    if (e.target.id === "imgModal" || e.target.id === "imgModalClose") {
+      document.getElementById("imgModal").style.display = "none";
+    }
+  }
+
+  // ── 제출 ──
   async function submitResponses() {
-    document.getElementById("studyScreen").style.display = "none";
-    document.getElementById("doneScreen").style.display  = "flex";
-    document.getElementById("spinner").style.display     = "block";
+    document.getElementById("reviewScreen").style.display = "none";
+    document.getElementById("doneScreen").style.display   = "flex";
+    document.getElementById("spinner").style.display      = "block";
 
     const payload = {
       participantId,
       imageOrder: imageOrder.map(img => img.match(/(\d+)/)[1]),
-      responses,
+      responses, // { num: { category, confidence } }
     };
 
     try {
