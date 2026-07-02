@@ -606,6 +606,14 @@
     return a;
   }
 
+  function getLayoutNum(imgPath) {
+    const match = imgPath.match(/layout_(\d{2})\.jpg$/);
+    if (!match) {
+      throw new Error("Invalid image path: " + imgPath);
+    }
+    return match[1];
+  }
+
   function buildConfidenceScale() {
     const wrap = document.getElementById("confidenceScale");
     wrap.innerHTML = "";
@@ -646,7 +654,7 @@
     document.getElementById("studyBackBtn").disabled = (currentIndex === 0);
 
     // 이미 답한 적이 있다면 (review에서 돌아온 경우) 복원
-    const num = imageOrder[currentIndex].match(/(\d+)/)[1];
+    const num = getLayoutNum(imageOrder[currentIndex]);
     const prev = responses[num];
     if (prev) {
       currentCategory = prev.category;
@@ -686,7 +694,7 @@
     if (!currentCategory || !currentConfidence) return;
 
     const imgPath = imageOrder[currentIndex];
-    const num = imgPath.match(/(\d+)/)[1];
+    const num = getLayoutNum(imgPath);
     responses[num] = { category: currentCategory, confidence: currentConfidence };
 
     currentIndex++;
@@ -779,7 +787,7 @@
 
     const payload = {
       participantId,
-      imageOrder: imageOrder.map(img => img.match(/(\d+)/)[1]),
+      imageOrder: imageOrder.map(img => getLayoutNum(img)),
       responses, // { num: { category, confidence } }
     };
 
